@@ -35,6 +35,10 @@ helpers do
   end
 end
 
+get '/' do
+  redirect '/admin/websites'
+end
+
 get '/admin/websites' do
   authorize!
   db = create_database_connection
