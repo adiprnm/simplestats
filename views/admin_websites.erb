@@ -1,0 +1,15 @@
+<div class="mt-8">
+  <h2>Websites</h2>
+  <a href="/admin/websites/new">
+    <button>+ Tambah baru</button>
+  </a>
+  <% if @websites.any? %>
+    <ul>
+      <% @websites.each do |website| %>
+        <li><a href="/admin/websites/<%= website["id"] %>"><%= website["name"] %></a></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>Belum ada website.</p>
+  <% end %>
+</div>

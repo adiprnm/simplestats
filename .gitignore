@@ -1,0 +1,8 @@
+/storage/*
+!/storage/.keep
+
+/storage/uploads/*
+!/storage/uploads/.keep
+
+/deployment_id
+/reset.sh

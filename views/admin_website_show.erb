@@ -1,0 +1,180 @@
+<div class="mt-8">
+  <h3><%= @website["name"] %> statistic</h3>
+  <form action="/admin/websites/<%= @website['id'] %>" method="get" id="timeFilter">
+    <%
+      options = {
+        "today" => "Today",
+        "last_seven_days" => "Last 7 days",
+        "last_fourteen_days" => "Last 14 days",
+        "last_thirty_days" => "Last 30 days"
+      }
+    %>
+    <select name="period" id="period" class="border-b" onchange="document.getElementById('timeFilter').submit()">
+      <% options.each do |type, text| %>
+        <option <%= 'selected' if params['period'] == type %> value="<%= type %>"><%= text %></option>
+      <% end %>
+    </select>
+  </form>
+  <p><small class="text-gray">Displaying stats from <span class="underline"><%= @starts.strftime("%d %b %Y") %> - <%= @ends.strftime("%d %b %Y") %></span></small></p>
+
+  <div class="flex gap-2">
+    <fieldset class="w-1/2">
+      <legend align="center" class="text-sm">Visits</legend>
+
+      <h2 class="text-center m-0"><%= @total_visits %></h2>
+    </fieldset>
+
+    <fieldset class="w-1/2">
+      <legend align="center" class="text-sm">Visitors</legend>
+
+      <h2 class="text-center m-0"><%= @total_visitors %></h2>
+    </fieldset>
+  </div>
+
+  <div class="mt-8" style="height: 250px;">
+    <canvas id="visits-chart"></canvas>
+  </div>
+
+  <fieldset class="mt-8">
+    <legend><strong>Posts/Pages</strong></legend>
+
+    <% if @visits_by_entry.any? %>
+      <table class="w-full max-w-full">
+        <thead>
+          <th class="text-left">Name</th>
+          <th class="text-right">Visits</th>
+        </thead>
+        <tbody>
+          <% @visits_by_entry.each do |visit| %>
+            <tr>
+              <td class="stats-title text-primary"><a href="<%= scheme %>://<%= @website["identifier"] %><%= visit['slug'] %>" target="_blank"><%= visit['title'] %></a></td>
+              <td class="text-right"><%= visit['count'] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No stats yet.</p>
+    <% end %>
+  </fieldset>
+
+  <fieldset class="mt-4">
+    <legend><strong>Referer</strong></legend>
+
+    <% if @visits_by_referer.any? %>
+      <table class="w-full max-w-full">
+        <thead>
+          <th class="text-left">Name</th>
+          <th class="text-right">Visits</th>
+        </thead>
+        <tbody>
+          <% @visits_by_referer.each do |visit| %>
+            <tr>
+              <td class="stats-title"><%= visit['title'] %></td>
+              <td class="text-right"><%= visit['count'] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No stats yet.</p>
+    <% end %>
+  </fieldset>
+
+  <fieldset class="mt-4">
+    <legend><strong>Country</strong></legend>
+
+    <% if @visits_by_country.any? %>
+      <table class="w-full max-w-full">
+        <thead>
+          <th class="text-left">Name</th>
+          <th class="text-right">Visits</th>
+        </thead>
+        <tbody>
+          <% @visits_by_country.each do |visit| %>
+            <tr>
+              <td class="stats-title"><%= visit['title'] %></td>
+              <td class="text-right"><%= visit['count'] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No stats yet.</p>
+    <% end %>
+  </fieldset>
+
+  <fieldset class="mt-4">
+    <legend><strong>Device</strong></legend>
+
+    <% if @visits_by_device.any? %>
+      <table class="w-full max-w-full">
+        <thead>
+          <th class="text-left">Name</th>
+          <th class="text-right">Visits</th>
+        </thead>
+        <tbody>
+          <% @visits_by_device.each do |visit| %>
+            <tr>
+              <td class="stats-title"><%= visit['title'] %></td>
+              <td class="text-right"><%= visit['count'] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No stats yet.</p>
+    <% end %>
+  </fieldset>
+
+  <fieldset class="mt-4">
+    <legend><strong>Browser</strong></legend>
+
+    <% if @visits_by_browser.any? %>
+      <table class="w-full max-w-full">
+        <thead>
+          <th class="text-left">Name</th>
+          <th class="text-right">Visits</th>
+        </thead>
+        <tbody>
+          <% @visits_by_browser.each do |visit| %>
+            <tr>
+              <td class="stats-title"><%= visit['title'] %></td>
+              <td class="text-right"><%= visit['count'] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No stats yet.</p>
+    <% end %>
+  </fieldset>
+</div>
+
+<% content_for :head do %>
+  <script src="/js/chart.js"></script>
+<% end %>
+
+<script>
+  const ctx = document.getElementById('visits-chart');
+  const data = JSON.parse(`<%= @chart_data %>`)
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: data,
+    options: {
+      scales: {
+        y: {
+          ticks: {
+            stepSize: 1, // Force step intervals to be 1
+            callback: function(value) {
+              return Number.isInteger(value) ? value : null; // Show only integers
+            }
+          }
+        }
+      },
+      responsive: true,
+      maintainAspectRatio: false // Allow custom height
+    }
+  });
+</script>

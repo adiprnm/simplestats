@@ -1,0 +1,7 @@
+/storage/*
+!/storage/.keep
+
+/storage/uploads/*
+!/storage/uploads/.keep
+
+/reset.sh

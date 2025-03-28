@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="/css/main.css?id=<%= deployment_id %>">
+  <%= yield_content :head %>
+  <title><%= @site["title"] %></title>
+</head>
+<body>
+  <main class="container px-4 pb-16">
+    <h1>SimpleStats</h1>
+    <%= yield %>
+  </main>
+</body>
+</html>
