@@ -10,8 +10,7 @@
     const url =`${baseUrl}/hit?path=${encodeURIComponent(window.location.pathname)}&ref=${encodeURIComponent(ref)}&website=${site}&page=${page}`
 
     document.addEventListener('DOMContentLoaded', () => {
-      const body = document.querySelector('body');
-      body.addEventListener('mouseover', () => fetch(url), { once: true });
-      body.addEventListener('click', () => fetch(url), { once: true });
+      document.querySelector('body').addEventListener('mouseover', () => fetch(url), { once: true });
+      document.addEvenetListener('click', () => fetch(url), { once: true });
     })
 })();
