@@ -12,5 +12,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       const body = document.querySelector('body');
       body.addEventListener('mouseover', () => fetch(url), { once: true });
+      body.addEventListener('click', () => fetch(url), { once: true });
     })
 })();
