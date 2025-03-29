@@ -11,6 +11,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelector('body').addEventListener('mouseover', () => fetch(url), { once: true });
-      document.addEvenetListener('click', () => fetch(url), { once: true });
+      document.addEvenetListener('touchstart', () => fetch(url), { once: true });
     })
 })();
