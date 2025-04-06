@@ -28,10 +28,15 @@ def migrate!
     entry_name TEXT,
     entry_path TEXT,
     visitor_id TEXT,
-    UNIQUE(visit_hash),
     FOREIGN KEY(website_id) REFERENCES websites(id)
   )
   SQL
+
+  db.execute <<-SQL
+  CREATE UNIQUE INDEX IF NOT EXISTS website_visit_hash_unique
+  ON visits (website_id, visit_hash)
+  SQL
+
   db.close
 end
 
