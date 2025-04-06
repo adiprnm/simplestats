@@ -7,6 +7,6 @@
     const getDomain = url => { try { return new URL(url).hostname; } catch { return null; } };
     const ref = [refParam, document.referrer].find(r => r && getDomain(r) !== currentDomain) || '';
     const baseUrl = script.src.split('/script.js')[0]
-    const url =`${baseUrl}/hit?path=${encodeURIComponent(window.location.pathname)}&ref=${encodeURIComponent(ref)}&website=${site}&page=${page}`
+    const url =`${baseUrl}/hit?path=${encodeURIComponent(window.location.pathname)}&ref=${encodeURIComponent(ref)}&website=${site}&page=${encodeURIComponent(page)}`
     fetch(url)
 })();
