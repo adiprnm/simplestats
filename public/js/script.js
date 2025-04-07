@@ -1,7 +1,7 @@
 (function() {
     const script = document.currentScript;
     const site = script?.dataset?.website || '';
-    const page = script?.dataset?.page || '';
+    const page = script?.dataset?.page || document.title || '';
     const currentDomain = window.location.hostname;
     const refParam = new URLSearchParams(window.location.search).get('ref');
     const getDomain = url => { try { return new URL(url).hostname; } catch { return null; } };
