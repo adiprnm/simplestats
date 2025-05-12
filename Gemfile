@@ -9,10 +9,6 @@ gem "rackup", "~> 2.2"
 gem "puma", "~> 6.6"
 gem "sqlite3", "~> 2.6"
 
-group :development do
-  gem "rerun"
-end
-
 gem "maxminddb", "~> 0.1.22"
 gem "useragent", "~> 0.16.11"
 
