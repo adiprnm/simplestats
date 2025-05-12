@@ -7,7 +7,11 @@
     <ul>
       <% @websites.each do |website| %>
         <li style="margin-top: 0.75rem;">
-          <a href="/admin/websites/<%= website["id"] %>"><%= website["name"] %></a> (<%= @stats[website["id"]].to_i %> visits today)
+          <% if @stats[website["id"].to_i].to_i > 0 %>
+          <a href="/admin/websites/<%= website["id"] %>"><%= website["name"] %></a> (<strong style="color: #28a745;"><%= @stats[website["id"].to_i] %></strong> visits today)
+          <% else %>
+          <a href="/admin/websites/<%= website["id"] %>"><%= website["name"] %></a> (No visits yet today)
+          <% end %>
           |
           <a href="/admin/websites/<%= website["id"] %>/edit">Edit</a>
           <form action="/admin/websites/<%= website["id"] %>" method="post" class="inline-block" onsubmit="return confirm('Are you sure? Once deleted, the visits records will also permanently be deleted.')">

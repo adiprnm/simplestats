@@ -44,11 +44,13 @@ get '/admin/websites' do
   db = create_database_connection
   @websites = db.execute('SELECT * FROM websites')
   today = Time.now.getlocal("+07:00").to_date.to_s
-  @stats = db.execute(<<-SQL, website_ids: @websites.map { |w| w["id"] }.join(', '), date: today)
-    SELECT website_id, COUNT(id) FROM visits
-    WHERE website_id IN (:website_ids) AND date = :date
+  stats = db.execute(<<-SQL, date: today)
+    SELECT website_id, COUNT(id) AS visits_count FROM visits
+    WHERE date = :date AND website_id IN (#{@websites.map { |w| w["id"] }.join(", ")})
     GROUP BY website_id
   SQL
+  @stats = {}
+  stats.each { |s| @stats[s["website_id"]] = s["visits_count"] }
   db.close
   @site = { "title" => "Websites" }
 
