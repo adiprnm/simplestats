@@ -43,6 +43,13 @@ get '/admin/websites' do
   authorize!
   db = create_database_connection
   @websites = db.execute('SELECT * FROM websites')
+  today = Time.now.getlocal("+07:00").to_date.to_s
+  @stats = db.execute(<<-SQL, website_ids: @websites.map { |w| w["id"] }.join(', '), date: today)
+    SELECT website_id, COUNT(id) FROM visits
+    WHERE website_id IN (:website_ids) AND date = :date
+    GROUP BY website_id
+  SQL
+  db.close
   @site = { "title" => "Websites" }
 
   erb :admin_websites, layout: :admin_layout
@@ -175,6 +182,43 @@ get '/admin/websites/:id' do
   db.close
 
   erb :admin_website_show, layout: :admin_layout
+end
+
+get '/admin/websites/:id/edit' do
+  authorize!
+  params['period'] ||= 'today'
+  db = create_database_connection
+  @website = db.execute('SELECT * FROM websites WHERE id = ?', params['id']).first
+  db.close
+  halt 404, 'Website not found' unless @website
+  @site = { 'title' => "Edit #{@website['name']}" }
+
+  erb :admin_website_edit, layout: :admin_layout
+end
+
+put '/admin/websites/:id' do
+  authorize!
+  db = create_database_connection
+  @website = db.execute('SELECT * FROM websites WHERE id = ?', params['id']).first
+  halt 404, 'Website not found' unless @website
+
+  db.execute('UPDATE websites SET name = ?, identifier = ? WHERE id = ?', [params['name'], params['identifier'], params['id']])
+  db.close
+
+  redirect '/admin/websites'
+end
+
+delete '/admin/websites/:id' do
+  authorize!
+  db = create_database_connection
+  @website = db.execute('SELECT * FROM websites WHERE id = ?', params['id']).first
+  halt 404, 'Website not found' unless @website
+
+  db.execute('DELETE FROM visits WHERE website_id = ?', params['id'])
+  db.execute('DELETE FROM websites WHERE id = ?', params['id'])
+  db.close
+
+  redirect '/admin/websites'
 end
 
 get "/hit" do

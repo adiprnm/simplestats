@@ -6,7 +6,17 @@
   <% if @websites.any? %>
     <ul>
       <% @websites.each do |website| %>
-        <li><a href="/admin/websites/<%= website["id"] %>"><%= website["name"] %></a></li>
+        <li style="margin-top: 0.75rem;">
+          <a href="/admin/websites/<%= website["id"] %>"><%= website["name"] %></a> (<%= @stats[website["id"]].to_i %> visits today)
+          |
+          <a href="/admin/websites/<%= website["id"] %>/edit">Edit</a>
+          <form action="/admin/websites/<%= website["id"] %>" method="post" class="inline-block" onsubmit="return confirm('Are you sure? Once deleted, the visits records will also permanently be deleted.')">
+            <input type="hidden" name="_method" value="delete">
+            <input type="submit" value="Delete" style="color: red; padding: 0; background-color: transparent; border: none; cursor: pointer;">
+          </form>
+          <br>
+          <small style="color: gray; margin-top: -4px;">(<%= website["identifier"] %>)</small>
+        </li>
       <% end %>
     </ul>
   <% else %>

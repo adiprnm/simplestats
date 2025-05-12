@@ -1,0 +1,16 @@
+<div class="mt-8">
+  <h2>Edit Website</h2>
+
+  <form action="/admin/websites/<%= @website["id"] %>" method="post">
+    <input type="hidden" name="_method" value="put">
+    <div>
+      <label for="name">Nama</label>
+      <input type="text" name="name" id="name" required value="<%= @website["name"] %>">
+    </div>
+    <div class="mt-2">
+      <label for="identifier">Identifier</label>
+      <input type="text" name="identifier" id="identifier" required value="<%= @website["identifier"] %>">
+    </div>
+    <input type="submit" value="Simpan" class="mt-8">
+  </form>
+</div>
