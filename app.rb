@@ -11,7 +11,7 @@ require_relative 'middlewares/cloudflare_real_ip'
 
 set :public_folder, "#{__dir__}/public"
 
-use CloudflareRealIP
+# use CloudflareRealIP
 
 def authorized?
   @auth ||= Rack::Auth::Basic::Request.new(request.env)
@@ -243,8 +243,10 @@ get "/hit" do
     port = ":#{uri.port}" if uri.port && ![80, 443].include?(uri.port)
       referer = "#{uri.scheme}://#{uri.host}#{port}/" if port
   end
-  visitor_id = Digest::SHA256.hexdigest request.ip
-  visit_hash = Digest::SHA256.hexdigest [params['path'], date, request.ip].join('-')
+
+  client_ip = request.env['HTTP_CF_CONNECTING_IP'] || request.ip
+  visitor_id = Digest::SHA256.hexdigest client_ip
+  visit_hash = Digest::SHA256.hexdigest [params['path'], date, client_ip].join('-')
   visit_params = {
     'website_id' => @website["id"],
     'entry_name' => params['page'],
